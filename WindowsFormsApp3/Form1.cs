@@ -18,6 +18,8 @@ using UIAutomationClient;
 using System.Windows.Automation;
 using System.Data.OleDb;
 using Excel = Microsoft.Office.Interop.Excel;
+using EasyXLS;
+
 
 
 namespace WindowsFormsApp3
@@ -35,14 +37,6 @@ namespace WindowsFormsApp3
             textBox4.ForeColor = Color.Silver;  
             textBox5.Text = "Name";
             textBox5.ForeColor = Color.Silver;
-            /*textBox2.Text = "Id?";
-            textBox2.ForeColor = Color.Silver;
-            textBox1.Text = "Addres?";
-            textBox1.ForeColor = Color.Silver;
-            textBox3.Text = "Name?";
-            textBox3.ForeColor = Color.Silver;*/
-
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -84,88 +78,6 @@ namespace WindowsFormsApp3
 
 
         }
-        public string GetBrowserUrl()
-        {
-            /* if (Browser == BrowserType.Chrome)
-             {
-                 //"Chrome_WidgetWin_1"
-
-                 Process[] procsChrome = Process.GetProcessesByName("chrome");
-                 foreach (Process chrome in procsChrome)
-                 {
-                     // the chrome process must have a window
-                     if (chrome.MainWindowHandle == IntPtr.Zero)
-                     {
-                         continue;
-                     }
-                     //AutomationElement elm = AutomationElement.RootElement.FindFirst(TreeScope.Children,
-                     //         new PropertyCondition(AutomationElement.ClassNameProperty, "Chrome_WidgetWin_1"));
-                     // find the automation element
-                     AutomationElement elm = AutomationElement.FromHandle(chrome.MainWindowHandle);
-
-                     // manually walk through the tree, searching using TreeScope.Descendants is too slow (even if it more reliable)
-                     AutomationElement elmUrlBar = null;
-                     try
-                     {
-                         // walking path found using inspect.exe (Windows SDK) for Chrome 29.0.1547.76 m (currently the latest stable)
-                         var elm1 = elm.FindFirst(System.Windows.Automation.TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Google Chrome"));
-                         var elm2 = TreeWalker.ControlViewWalker.GetLastChild(elm1); // I don't know a Condition for this for finding :(
-                         var elm3 = elm2.FindFirst(System.Windows.Automation.TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, ""));
-                         var elm4 = elm3.FindFirst(System.Windows.Automation.TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ToolBar));
-                         elmUrlBar = elm4.FindFirst(System.Windows.Automation.TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Address and search bar"));
-                     }
-                     catch
-                     {
-                         // Chrome has probably changed something, and above walking needs to be modified. :(
-                         // put an assertion here or something to make sure you don't miss it
-                         continue;
-                     }
-
-                     // make sure it valid
-                     if (elmUrlBar == null)
-                     {
-                         // it not..
-                         continue;
-                     }
-
-                     // elmUrlBar is now the URL bar element. we have to make sure that it out of keyboard focus if we want to get a valid URL
-                     if ((bool)elmUrlBar.GetCurrentPropertyValue(AutomationElement.HasKeyboardFocusProperty))
-                     {
-                         continue;
-                     }
-
-                     // there might not be a valid pattern to use, so we have to make sure we have one
-                     AutomationPattern[] patterns = elmUrlBar.GetSupportedPatterns();
-                     if (patterns.Length == 1)
-                     {
-                         string ret = "";
-                         try
-                         {
-                             ret = ((ValuePattern)elmUrlBar.GetCurrentPattern(patterns[0])).Current.Value;
-                         }
-                         catch { }
-                         if (ret != "")
-                         {
-                             // must match a domain name (and possibly "https://" in front)
-                             if (Regex.IsMatch(ret, @"^(https:\/\/)?[a-zA-Z0-9\-\.]+(\.[a-zA-Z]{2,4}).*$"))
-                             {
-                                 // prepend http:// to the url, because Chrome hides it if it not SSL
-                                 if (!ret.StartsWith("http"))
-                                 {
-                                     ret = "http://" + ret;
-                                 }
-                                 return ret;
-
-                             }
-                         }
-                         continue;
-                     }
-                 }
-
-             //}*/
-            return "";
-            
-        }
 
         private void LoadData(string query)
         {
@@ -182,18 +94,18 @@ namespace WindowsFormsApp3
             }
         }
 
-        private void textBox5_TextChanged(object sender, EventArgs e) //name add
-        {
-
-        }
-
         private void button5_Click(object sender, EventArgs e) //add button
         {
-            if ( textBox4.TextLength == 0 && textBox5.TextLength == 0)
+            if (textBox4.TextLength == 0 && textBox5.TextLength == 0)
             {
                 textBox4.Text = "Enter the address!";
                 textBox5.Text = "Enter the name!";
-            }   
+            }
+            else if (textBox4.ForeColor == Color.Silver && textBox5.ForeColor == Color.Silver)
+            {
+                textBox5.Text = "Enter the name!";
+                textBox4.Text = "Enter the address!";
+            }
             else if (textBox5.TextLength == 0 || textBox5.ForeColor == Color.Silver)
                 textBox5.Text = "Enter the name!";
             else if (textBox4.TextLength == 0 || textBox4.ForeColor == Color.Silver)
@@ -219,50 +131,46 @@ namespace WindowsFormsApp3
             sfd.FileName = "Inventory_Adjustment_Export.xls";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                // Copy DataGridView results to clipboard
-                copyAlltoClipboard();
 
-                object misValue = System.Reflection.Missing.Value;
-                Excel.Application xlexcel = new Excel.Application();
+                // Create an instance of the class that exports Excel files, having one sheet
+                ExcelDocument workbook = new ExcelDocument(1);
 
-                xlexcel.DisplayAlerts = false; // Without this you will get two confirm overwrite prompts
-                Excel.Workbook xlWorkBook = xlexcel.Workbooks.Add(misValue);
-                Excel.Worksheet xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                // Set sheet name
+                ExcelWorksheet xlsWorksheet = (ExcelWorksheet)workbook.easy_getSheetAt(0);
+                xlsWorksheet.setSheetName("DataGridView");
 
-                // Format column D as text before pasting results, this was required for my data
-                Excel.Range rng = xlWorkSheet.get_Range("D:D").Cells;
-                rng.NumberFormat = "@";
+                // Get the sheet table that stores the data
+                ExcelTable xlsTable = xlsWorksheet.easy_getExcelTable();
+                int tableRow = 0;
 
-                // Paste clipboard results to worksheet range
-                Excel.Range CR = (Excel.Range)xlWorkSheet.Cells[1, 1];
-                CR.Select();
-                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+                // Export DataGridView header if the header is visible
+                if (dataGridView1.ColumnHeadersVisible)
+                {
 
-                // For some reason column A is always blank in the worksheet. ¯\_(ツ)_/¯
-                // Delete blank column A and select cell A1
-                Excel.Range delRng = xlWorkSheet.get_Range("A:A").Cells;
-                delRng.Delete(Type.Missing);
-                xlWorkSheet.get_Range("A1").Select();
+                    // Add data in cells for header
+                    for (int column = 0; column < dataGridView1.Columns.Count; column++)
+                    {
+                        xlsTable.easy_getCell(tableRow, column).setValue(
+                                              dataGridView1.Columns[column].HeaderText);
+                    }
+                    tableRow++;
+                }
 
-                // Save the excel file under the captured location from the SaveFileDialog
-                xlWorkBook.SaveAs(sfd.FileName, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-                xlexcel.DisplayAlerts = true;
-                xlWorkBook.Close(true, misValue, misValue);
-                xlexcel.Quit();
+                // Add data in cells
+                for (int row = 0; row < dataGridView1.Rows.Count - 1; row++)
+                {
+                    for (int column = 0; column < dataGridView1.Columns.Count; column++)
+                    {
+                        xlsTable.easy_getCell(tableRow, column).setValue(
+                                              dataGridView1.Rows[row].Cells[column].Value.ToString());
+                    }
+                    tableRow++;
+                }
 
-                releaseObject(xlWorkSheet);
-                releaseObject(xlWorkBook);
-                releaseObject(xlexcel);
-
-                // Clear Clipboard and DataGridView selection
-                Clipboard.Clear();
-                dataGridView1.ClearSelection();
-
-                // Open the newly saved excel file
-                if (System.IO.File.Exists(sfd.FileName))
-                    System.Diagnostics.Process.Start(sfd.FileName);
-                 }
+                // Export Excel file
+                workbook.easy_WriteXLSFile(sfd.FileName);
             }
+        }
         private void copyAlltoClipboard()
         {
             dataGridView1.SelectAll();
@@ -287,7 +195,7 @@ namespace WindowsFormsApp3
                 GC.Collect();
             }
         }
-
+        
 
         private void button4_Click(object sender, EventArgs e) //                            import button
         {
@@ -295,63 +203,39 @@ namespace WindowsFormsApp3
             OpenFileDialog opf = new OpenFileDialog();
             
             opf.Filter = "Excel (*.XLS)|*.XLS";
-            opf.ShowDialog();
-            try
+            if (opf.ShowDialog() == DialogResult.OK)
             {
-                string filename = opf.FileName;
-                string ConStr = String.Format("Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0}; Extended Properties='Excel 8.0;HDR=YES;';", filename);
-                using (OleDbConnection cn = new OleDbConnection(ConStr))
+                try
                 {
-                    cn.Open();
-                    DataTable schemaTable = cn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-                    string sheet1 = (string)schemaTable.Rows[0].ItemArray[2];
-
-                    //string sheet1 = @"Лист1";
-                    string select = String.Format("SELECT * FROM [{0}]", sheet1);
-                    //string select = "SELECT * FROM [" + sheet1 + "$]";
-                    
-                    using (OleDbDataAdapter ad = new OleDbDataAdapter(select, cn))
+                    string filename = opf.FileName;
+                    string ConStr = String.Format("Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0}; Extended Properties='Excel 8.0;HDR=YES;';", filename);
+                    using (OleDbConnection cn = new OleDbConnection(ConStr))
                     {
-                        
-                        DataTable dt = new DataTable();
-                        ad.Fill(dt);
-                        dataGridView1.DataSource = dt;
+                        cn.Open();
+                        DataTable schemaTable = cn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
+                        string sheet1 = (string)schemaTable.Rows[0].ItemArray[2];
 
+                        //string sheet1 = @"Лист1";
+                        string select = String.Format("SELECT * FROM [{0}]", sheet1);
+                        //string select = "SELECT * FROM [" + sheet1 + "$]";
+
+                        using (OleDbDataAdapter ad = new OleDbDataAdapter(select, cn))
+                        {
+
+                            DataTable dt = new DataTable();
+                            ad.Fill(dt);
+                            dataGridView1.DataSource = dt;
+
+                        }
+                        cn.Close();
                     }
-                    cn.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
-            }
-
-
-
-            /*OleDbConnection con;
-            OleDbDataAdapter adapter;
-            OpenFileDialog opf = new OpenFileDialog();
-            opf.Filter = "Excel (*.XLS)|*.XLS";
-            opf.ShowDialog();
-            string filename = opf.FileName;
-            string conString = String.Format("Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0}; Extended Properties=Excel 12.0;");
             
-                con = new OleDbConnection(conString);
-            DataTable schemaTable = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-            string sheet1 = (string)schemaTable.Rows[0].ItemArray[2];
-            string sql = String.Format("SELECT * FROM [{0}]", sheet1);
-
-            //ADAPTER
-            adapter = new OleDbDataAdapter(sql, con);
-
-            DataSet ds = new DataSet();
-
-            adapter.Fill(ds);
-
-            dataGridView1.DataSource = ds.Tables[0];
-
-            //CLOSE CON
-            con.Close();*/
         }
       
 
@@ -419,14 +303,14 @@ namespace WindowsFormsApp3
 
         private void textBox4_Enter(object sender, EventArgs e)
         {
-            textBox4.Text = null;
-            textBox4.ForeColor = Color.Black;
+                textBox4.Text = null;
+                textBox4.ForeColor = Color.Black;
         }
 
         private void textBox5_Enter(object sender, EventArgs e)
         {
-            textBox5.Text = null;
-            textBox5.ForeColor = Color.Black;
+                textBox5.Text = null;
+                textBox5.ForeColor = Color.Black;
         }
 
        
