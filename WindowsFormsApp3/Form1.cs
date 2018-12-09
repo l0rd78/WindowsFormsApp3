@@ -171,31 +171,6 @@ namespace WindowsFormsApp3
                 workbook.easy_WriteXLSFile(sfd.FileName);
             }
         }
-        private void copyAlltoClipboard()
-        {
-            dataGridView1.SelectAll();
-            DataObject dataObj = dataGridView1.GetClipboardContent();
-            if (dataObj != null)
-                Clipboard.SetDataObject(dataObj);
-        }
-        private void releaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch (Exception ex)
-            {
-                obj = null;
-                MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
-        
 
         private void button4_Click(object sender, EventArgs e) //                            import button
         {
@@ -238,12 +213,6 @@ namespace WindowsFormsApp3
             
         }
       
-
-
-
-
-       
-
         private void button6_Click(object sender, EventArgs e) //delete button
         {
             SqlConnection myConnection = new SqlConnection(connectString);
@@ -294,11 +263,6 @@ namespace WindowsFormsApp3
         private void button2_Click(object sender, EventArgs e) //                show all button
         {
             LoadData();
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void textBox4_Enter(object sender, EventArgs e)
