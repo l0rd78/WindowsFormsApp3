@@ -203,7 +203,7 @@ namespace WindowsFormsApp3
             }
         }
 
-        private void button4_Click(object sender, EventArgs e) //                            import button
+        public void button4_Click(object sender, EventArgs e) //                            import button
         {
             OpenFileDialog opf = new OpenFileDialog();
             
@@ -279,7 +279,6 @@ namespace WindowsFormsApp3
                 LoadData();
             }else
             {
-
             }
                 
         }
