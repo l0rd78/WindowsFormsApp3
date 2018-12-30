@@ -24,18 +24,17 @@ using EasyXLS;
 
 namespace WindowsFormsApp3
 {
-    
+
     public partial class Form1 : Form
     {
         string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\Documents\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
-        bool b = false;
 
         public Form1()
         {
             InitializeComponent();
             textBox4.Text = "Addess";
-            textBox4.ForeColor = Color.Silver;  
+            textBox4.ForeColor = Color.Silver;
             textBox5.Text = "Name";
             textBox5.ForeColor = Color.Silver;
         }
@@ -44,7 +43,7 @@ namespace WindowsFormsApp3
         {
             LoadData();
             blockItem();
-            
+
         }
         private void LoadData()
         {
@@ -100,7 +99,7 @@ namespace WindowsFormsApp3
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);
                 dataGridView1.DataSource = ds.Tables[0];
-                
+
             }
         }
 
@@ -113,7 +112,7 @@ namespace WindowsFormsApp3
                 textBox4.Text = "Enter the address!";
                 textBox5.ForeColor = Color.Red;
                 textBox5.Text = "Enter the name!";
-               
+
             }
             else if (textBox4.ForeColor == Color.Silver && textBox5.ForeColor == Color.Silver)
             {
@@ -131,28 +130,26 @@ namespace WindowsFormsApp3
             {
                 textBox4.ForeColor = Color.Red;
                 textBox4.Text = "Enter the address!";
-            } 
+            }
             else if (textBox4.TextLength > 0 && textBox5.TextLength > 0)
             {
-                if(b == false)
-                {
-                    SqlConnection myConnection = new SqlConnection(connectString);
-                    myConnection.Open();
-                    string addItem = string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text);
-                    SqlCommand command = new SqlCommand(addItem, myConnection);
-                    command.CommandText = addItem;
-                    command.ExecuteNonQuery();
-                    myConnection.Close();
-                    LoadData();
-                }
-                else
-                {
 
-
-                }
-                
+                SqlConnection myConnection = new SqlConnection(connectString);
+                myConnection.Open();
+                string addItem = string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text);
+                SqlCommand command = new SqlCommand(addItem, myConnection);
+                command.CommandText = addItem;
+                command.ExecuteNonQuery();
+                myConnection.Close();
+                LoadData();
+                blockItem();
+                textBox4.Text = "";
+                textBox5.Text = "";
             }
+
         }
+    
+    
 
         
         private void button3_Click(object sender, EventArgs e) //                          export button
@@ -228,9 +225,11 @@ namespace WindowsFormsApp3
                         {
                             DataTable dt = new DataTable();
                             ad.Fill(dt);
-                            dataGridView1.DataSource = dt;
+                            //dataGridView1.DataSource = dt;
+
                             UpdateData(dt);
-                            b = true;
+                            LoadData();
+                            
 
                         }
                         cn.Close();
@@ -251,15 +250,17 @@ namespace WindowsFormsApp3
                 connection.Open();
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
                 command.ExecuteNonQuery();
+                connection.Close();
             }
             for(int i =0; i< dt.Rows.Count; i++)
             {
-                string sqlExpression2 = string.Format("INSERT INTO [Table](Id, Address, Name) VALUES({0}, {1}, {2})", dt.Rows[i].ItemArray[0], dt.Rows[i].ItemArray[1], dt.Rows[i].ItemArray[2]);
+                string sqlExpression2 = string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", dt.Rows[i].ItemArray[1], dt.Rows[i].ItemArray[2]);
                 using (SqlConnection connection = new SqlConnection(connectString))
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
+                    SqlCommand command = new SqlCommand(sqlExpression2, connection);
                     command.ExecuteNonQuery();
+                    connection.Close();
                 }
             }
             
@@ -267,20 +268,26 @@ namespace WindowsFormsApp3
       
         private void button6_Click(object sender, EventArgs e) //delete button
         {
-            if (b == false)
+            try
             {
                 SqlConnection myConnection = new SqlConnection(connectString);
                 myConnection.Open();
-                string delItem = string.Format("DELETE [Table] WHERE Id = {0}", Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value));
-                SqlCommand command = new SqlCommand(delItem, myConnection);
-                command.CommandText = delItem;
-                command.ExecuteNonQuery();
-                myConnection.Close();
-                LoadData();
-            }else
-            {
-            }
+                if (dataGridView1.RowCount >1)
+                {
+                    string delItem = string.Format("DELETE [Table] WHERE Id = {0}", Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value));
+                    SqlCommand command = new SqlCommand(delItem, myConnection);
+                    command.CommandText = delItem;
+                    command.ExecuteNonQuery();
+                    myConnection.Close();
+                    LoadData();
+                }
                 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e) // search button (id - textBox2; address - textBox1; name - textBox3)
