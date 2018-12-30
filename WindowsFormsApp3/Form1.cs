@@ -29,7 +29,8 @@ namespace WindowsFormsApp3
     {
         string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\Documents\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
-        
+        bool b = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -58,8 +59,16 @@ namespace WindowsFormsApp3
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);
                 dataGridView1.DataSource = ds.Tables[0];
-                
+                flushdns();
             }
+        }
+        public void flushdns()
+        {
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            cmd.StartInfo.Arguments = "/C ipconfig /flushdns";
+            cmd.Start();
         }
         private void blockItem()
         {
@@ -71,11 +80,12 @@ namespace WindowsFormsApp3
                 {
                     for (int i = 0; i < dataGridView1.RowCount - 1; i++) //-1 обязательно, иначе попытается считать пустую строку
                     {
-                        //strWriter.WriteLine("127.0.0.1" + " " + dataGridView1.Rows[i].Cells[1].Value.ToString());
-                       // strWriter.WriteLine("127.0.0.1" + " " + "www." + dataGridView1.Rows[i].Cells[1].Value.ToString());
+                        strWriter.WriteLine("127.0.0.1" + " " + dataGridView1.Rows[i].Cells[1].Value.ToString());
+                        strWriter.WriteLine("127.0.0.1" + " " + "www." + dataGridView1.Rows[i].Cells[1].Value.ToString());
                     }
                 }
             }
+            flushdns();
         }
 
         private void LoadData(string query)
@@ -112,26 +122,35 @@ namespace WindowsFormsApp3
                 textBox4.ForeColor = Color.Red;
                 textBox4.Text = "Enter the address!";
             }
-            else if (textBox5.TextLength == 0 || textBox5.ForeColor == Color.Silver)
+            else if (textBox5.TextLength == 0 || textBox5.ForeColor == Color.Silver || textBox5.ForeColor == Color.Red)
             {
                 textBox5.ForeColor = Color.Red;
                 textBox5.Text = "Enter the name!";
             }
-            else if (textBox4.TextLength == 0 || textBox4.ForeColor == Color.Silver)
+            else if (textBox4.TextLength == 0 || textBox4.ForeColor == Color.Silver || textBox4.ForeColor == Color.Red)
             {
                 textBox4.ForeColor = Color.Red;
                 textBox4.Text = "Enter the address!";
             } 
             else if (textBox4.TextLength > 0 && textBox5.TextLength > 0)
             {
-                SqlConnection myConnection = new SqlConnection(connectString);
-                myConnection.Open();
-                string addItem = string.Format ("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text);
-                SqlCommand command = new SqlCommand(addItem, myConnection);
-                command.CommandText = addItem;
-                command.ExecuteNonQuery();
-                myConnection.Close();
-                LoadData();
+                if(b == false)
+                {
+                    SqlConnection myConnection = new SqlConnection(connectString);
+                    myConnection.Open();
+                    string addItem = string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text);
+                    SqlCommand command = new SqlCommand(addItem, myConnection);
+                    command.CommandText = addItem;
+                    command.ExecuteNonQuery();
+                    myConnection.Close();
+                    LoadData();
+                }
+                else
+                {
+
+
+                }
+                
             }
         }
 
@@ -211,7 +230,7 @@ namespace WindowsFormsApp3
                             ad.Fill(dt);
                             dataGridView1.DataSource = dt;
                             UpdateData(dt);
-
+                            b = true;
 
                         }
                         cn.Close();
@@ -248,19 +267,27 @@ namespace WindowsFormsApp3
       
         private void button6_Click(object sender, EventArgs e) //delete button
         {
-            SqlConnection myConnection = new SqlConnection(connectString);
-            myConnection.Open();
-            string delItem = string.Format("DELETE [Table] WHERE Id = {0}", Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value));
-            SqlCommand command = new SqlCommand(delItem, myConnection);
-            command.CommandText = delItem;
-            command.ExecuteNonQuery();
-            myConnection.Close();
-            LoadData();
+            if (b == false)
+            {
+                SqlConnection myConnection = new SqlConnection(connectString);
+                myConnection.Open();
+                string delItem = string.Format("DELETE [Table] WHERE Id = {0}", Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value));
+                SqlCommand command = new SqlCommand(delItem, myConnection);
+                command.CommandText = delItem;
+                command.ExecuteNonQuery();
+                myConnection.Close();
+                LoadData();
+            }else
+            {
+
+            }
+                
         }
 
         private void button1_Click(object sender, EventArgs e) // search button (id - textBox2; address - textBox1; name - textBox3)
         {
             string filterStr = " ";
+
             if (textBox3.TextLength > 0 && textBox1.TextLength > 0 && textBox2.TextLength > 0)
             {
                  filterStr = string.Format("SELECT * FROM [Table] WHERE Name LIKE N'{0}%' AND Address LIKE N'{1}%' AND Id LIKE '{2}%'", textBox3.Text, textBox1.Text, textBox2.Text);
