@@ -29,7 +29,7 @@ namespace WindowsFormsApp3
     {
         string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\Documents\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
-
+        Dbclass cl = new Dbclass();
         public Form1()
         {
             InitializeComponent();
@@ -134,13 +134,7 @@ namespace WindowsFormsApp3
             else if (textBox4.TextLength > 0 && textBox5.TextLength > 0)
             {
 
-                SqlConnection myConnection = new SqlConnection(connectString);
-                myConnection.Open();
-                string addItem = string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text);
-                SqlCommand command = new SqlCommand(addItem, myConnection);
-                command.CommandText = addItem;
-                command.ExecuteNonQuery();
-                myConnection.Close();
+                cl.connect2Db(string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text));
                 LoadData();
                 blockItem();
                 textBox4.Text = "";
@@ -216,21 +210,13 @@ namespace WindowsFormsApp3
                         cn.Open();
                         DataTable schemaTable = cn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
                         string sheet1 = (string)schemaTable.Rows[0].ItemArray[2];
-
-                        //string sheet1 = @"Лист1";
                         string select = String.Format("SELECT * FROM [{0}]", sheet1);
-                        //string select = "SELECT * FROM [" + sheet1 + "$]";
-
                         using (OleDbDataAdapter ad = new OleDbDataAdapter(select, cn))
                         {
                             DataTable dt = new DataTable();
                             ad.Fill(dt);
-                            //dataGridView1.DataSource = dt;
-
                             UpdateData(dt);
                             LoadData();
-                            
-
                         }
                         cn.Close();
                     }
@@ -244,24 +230,11 @@ namespace WindowsFormsApp3
         }
         private void  UpdateData(DataTable dt)
         {
-            string sqlExpression = "DELETE  FROM [Table] WHERE Id !='0'";
-            using (SqlConnection connection = new SqlConnection(connectString))
-            {
-                connection.Open();
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-                connection.Close();
-            }
+            cl.connect2Db("DELETE  FROM [Table] WHERE Id !='0'");
+            
             for(int i =0; i< dt.Rows.Count; i++)
             {
-                string sqlExpression2 = string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", dt.Rows[i].ItemArray[1], dt.Rows[i].ItemArray[2]);
-                using (SqlConnection connection = new SqlConnection(connectString))
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression2, connection);
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                cl.connect2Db(string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", dt.Rows[i].ItemArray[1], dt.Rows[i].ItemArray[2]));
             }
             
         }
@@ -270,15 +243,10 @@ namespace WindowsFormsApp3
         {
             try
             {
-                SqlConnection myConnection = new SqlConnection(connectString);
-                myConnection.Open();
                 if (dataGridView1.RowCount >1)
                 {
-                    string delItem = string.Format("DELETE [Table] WHERE Id = {0}", Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value));
-                    SqlCommand command = new SqlCommand(delItem, myConnection);
-                    command.CommandText = delItem;
-                    command.ExecuteNonQuery();
-                    myConnection.Close();
+                    cl.connect2Db(string.Format("DELETE [Table] WHERE Id = {0}", Convert.ToInt32(this.dataGridView1.CurrentRow.Cells[0].Value)));
+
                     LoadData();
                 }
                 
@@ -342,4 +310,6 @@ namespace WindowsFormsApp3
                 textBox5.ForeColor = Color.Black;
         }
     }
+
+  
 }
