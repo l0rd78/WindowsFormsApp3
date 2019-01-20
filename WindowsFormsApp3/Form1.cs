@@ -30,6 +30,7 @@ namespace WindowsFormsApp3
         string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\Documents\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
         Dbclass cl = new Dbclass();
+        TWP cl1 = new TWP();
         public Form1()
         {
             InitializeComponent();
@@ -43,7 +44,7 @@ namespace WindowsFormsApp3
         {
             LoadData();
             blockItem();
-
+            cl1.CreateProxySrvr();
         }
         private void LoadData()
         {
@@ -308,6 +309,11 @@ namespace WindowsFormsApp3
         {
                 textBox5.Text = null;
                 textBox5.ForeColor = Color.Black;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            cl1.StopProxySrvr();
         }
     }
 
