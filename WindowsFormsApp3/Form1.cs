@@ -19,8 +19,7 @@ using System.Windows.Automation;
 using System.Data.OleDb;
 using Excel = Microsoft.Office.Interop.Excel;
 using EasyXLS;
-
-
+using EasyXLS.Util;
 
 namespace WindowsFormsApp3
 {
@@ -44,7 +43,7 @@ namespace WindowsFormsApp3
         {
             LoadData();
             blockItem();
-            cl1.CreateProxySrvr();
+            //cl1.CreateProxySrvr();
         }
         private void LoadData()
         {
@@ -60,6 +59,7 @@ namespace WindowsFormsApp3
                 adapter.Fill(ds);
                 dataGridView1.DataSource = ds.Tables[0];
                 flushdns();
+                blockItem();
             }
         }
         public void flushdns()
@@ -78,10 +78,14 @@ namespace WindowsFormsApp3
             {
                 using (StreamWriter strWriter = new StreamWriter(fstream))
                 {
+                    
+
                     for (int i = 0; i < dataGridView1.RowCount - 1; i++) //-1 обязательно, иначе попытается считать пустую строку
                     {
+                        
                         strWriter.WriteLine("127.0.0.1" + " " + dataGridView1.Rows[i].Cells[1].Value.ToString());
                         strWriter.WriteLine("127.0.0.1" + " " + "www." + dataGridView1.Rows[i].Cells[1].Value.ToString());
+                        
                     }
                 }
             }
@@ -137,7 +141,6 @@ namespace WindowsFormsApp3
 
                 cl.connect2Db(string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", textBox4.Text, textBox5.Text));
                 LoadData();
-                blockItem();
                 textBox4.Text = "";
                 textBox5.Text = "";
             }
@@ -217,7 +220,6 @@ namespace WindowsFormsApp3
                             DataTable dt = new DataTable();
                             ad.Fill(dt);
                             UpdateData(dt);
-                            LoadData();
                         }
                         cn.Close();
                     }
@@ -237,7 +239,7 @@ namespace WindowsFormsApp3
             {
                 cl.connect2Db(string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", dt.Rows[i].ItemArray[1], dt.Rows[i].ItemArray[2]));
             }
-            
+            LoadData();
         }
       
         private void button6_Click(object sender, EventArgs e) //delete button
@@ -313,7 +315,7 @@ namespace WindowsFormsApp3
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            cl1.StopProxySrvr();
+            //cl1.StopProxySrvr();
         }
     }
 
