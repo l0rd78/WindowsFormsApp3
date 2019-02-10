@@ -42,8 +42,16 @@ namespace WindowsFormsApp3
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadData();
-            blockItem();
-            //cl1.CreateProxySrvr();
+            cl1.CreateProxySrvr();
+        }
+        public void ItemsRedirect()
+        {
+            string[] ItemsRedirect = new string[dataGridView1.RowCount - 1];
+            for (int i = 0; i < dataGridView1.RowCount - 1; i++)
+            {
+                ItemsRedirect[i] = dataGridView1.Rows[i].Cells[1].Value.ToString();
+            }
+            cl1.items = ItemsRedirect;
         }
         private void LoadData()
         {
@@ -58,40 +66,11 @@ namespace WindowsFormsApp3
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);
                 dataGridView1.DataSource = ds.Tables[0];
-                flushdns();
-                blockItem();
+                
             }
-        }
-        public void flushdns()
-        {
-            Process cmd = new Process();
-            cmd.StartInfo.FileName = "cmd.exe";
-            cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            cmd.StartInfo.Arguments = "/C ipconfig /flushdns";
-            cmd.Start();
-        }
-        private void blockItem()
-        {
-            string writePath = @"C:\Windows\System32\drivers\etc\hosts";
-            using (FileStream fstream = new FileStream(writePath, FileMode.OpenOrCreate))
+            ItemsRedirect();
 
-            {
-                using (StreamWriter strWriter = new StreamWriter(fstream))
-                {
-                    
-
-                    for (int i = 0; i < dataGridView1.RowCount - 1; i++) //-1 обязательно, иначе попытается считать пустую строку
-                    {
-                        
-                        strWriter.WriteLine("127.0.0.1" + " " + dataGridView1.Rows[i].Cells[1].Value.ToString());
-                        strWriter.WriteLine("127.0.0.1" + " " + "www." + dataGridView1.Rows[i].Cells[1].Value.ToString());
-                        
-                    }
-                }
-            }
-            flushdns();
         }
-
         private void LoadData(string query)
         {
             SqlConnection myConnection = new SqlConnection(connectString);
@@ -145,11 +124,7 @@ namespace WindowsFormsApp3
                 textBox5.Text = "";
             }
 
-        }
-    
-    
-
-        
+        } 
         private void button3_Click(object sender, EventArgs e) //                          export button
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -234,11 +209,14 @@ namespace WindowsFormsApp3
         private void  UpdateData(DataTable dt)
         {
             cl.connect2Db("DELETE  FROM [Table] WHERE Id !='0'");
+           // cl.connect2Db ("DBCC CHECKIDENT (projectNo1.dbo.Table, RESEED, 0) WITH TABLERESULTS ");
+           
             
             for(int i =0; i< dt.Rows.Count; i++)
             {
                 cl.connect2Db(string.Format("INSERT INTO [TABLE] (Address, Name) VALUES (N'{0}',N'{1}')", dt.Rows[i].ItemArray[1], dt.Rows[i].ItemArray[2]));
             }
+            
             LoadData();
         }
       
@@ -315,7 +293,7 @@ namespace WindowsFormsApp3
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //cl1.StopProxySrvr();
+            cl1.StopProxySrvr();
         }
     }
 

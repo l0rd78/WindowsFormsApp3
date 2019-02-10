@@ -9,6 +9,7 @@ namespace WindowsFormsApp3
 {
     public class TWP
     {
+        public string[] items { get; set; }
         ProxyServer proxyServer = new ProxyServer();
         public void CreateProxySrvr()
         {
@@ -41,8 +42,10 @@ namespace WindowsFormsApp3
                 e.DecryptSsl = false;
             }
         }
+        
         public async Task OnRequest(object sender, SessionEventArgs e)
         {
+            
             Console.WriteLine(e.HttpClient.Request.Url);
             if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("google.com"))
             {
@@ -55,10 +58,14 @@ namespace WindowsFormsApp3
                       "</html>");
             }
             //Redirect example
-            if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("wikipedia.org"))
+            foreach(string s in items)
             {
-                e.Redirect("https://www.paypal.com");
+                if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains(s)) 
+                {
+                    e.Redirect("https://www.paypal.com");
+                }
             }
+            
         }
         public async Task OnResponse(object sender, SessionEventArgs e)
         {
