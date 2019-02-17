@@ -1,32 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.WebRequestMethods;
-using xNet;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using Jacob.UIAutomation;
-using UIAutomationClient;
-using System.Windows.Automation;
 using System.Data.OleDb;
-using Excel = Microsoft.Office.Interop.Excel;
 using EasyXLS;
-using EasyXLS.Util;
 
 namespace WindowsFormsApp3
 {
 
     public partial class Form1 : Form
     {
-        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\Documents\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
+        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\WindowsFormsApp3\\WindowsFormsApp3\\bin\\Debug\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
         Dbclass cl = new Dbclass();
         TWP cl1 = new TWP();
