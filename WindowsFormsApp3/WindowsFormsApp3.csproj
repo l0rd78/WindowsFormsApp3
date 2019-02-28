@@ -41,7 +41,7 @@
     </Reference>
     <Reference Include="EasyXLS, Version=8.6.0.0, Culture=neutral, PublicKeyToken=632c31013494909a, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\EU Outsourcing\EasyXLS Trial for .NET v8.6\Dot NET version\DLL\EasyXLS.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\EU Outsourcing\EasyXLS Trial for .NET v8.6\Dot NET version\DLL\EasyXLS.dll</HintPath>
     </Reference>
     <Reference Include="Interop.UIAutomationClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Interop.UIAutomationClient.1.0.0\lib\net461\Interop.UIAutomationClient.dll</HintPath>
