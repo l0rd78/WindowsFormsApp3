@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data.OleDb;
-using EasyXLS;
+//using EasyXLS;
 
 
 namespace WindowsFormsApp3
@@ -12,7 +12,7 @@ namespace WindowsFormsApp3
 
     public partial class Form1 : Form
     {
-        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\WindowsFormsApp3\\WindowsFormsApp3\\bin\\Debug\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
+        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\WindowsFormsApp3\\WindowsFormsApp3\\bin\\Debug\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
         Dbclass cl = new Dbclass();
         TWP cl1 = new TWP();
@@ -113,6 +113,7 @@ namespace WindowsFormsApp3
         } 
         private void button3_Click(object sender, EventArgs e) //                          export button
         {
+            /*
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Excel Documents (*.xls)|*.xls";
             sfd.FileName = "Inventory_Adjustment_Export.xls";
@@ -157,6 +158,7 @@ namespace WindowsFormsApp3
                 // Export Excel file
                 workbook.easy_WriteXLSFile(sfd.FileName);
             }
+            */
         }
 
         public void button4_Click(object sender, EventArgs e) //                            import button
