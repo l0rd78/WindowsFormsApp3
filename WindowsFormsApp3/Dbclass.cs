@@ -10,7 +10,7 @@ namespace WindowsFormsApp3
 {
     class Dbclass
     {
-        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\WindowsFormsApp3\\WindowsFormsApp3\\bin\\Debug\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
+        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\source\\repos\\WindowsFormsApp3\\WindowsFormsApp3\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         public void connect2Db(string query)
         {
 
