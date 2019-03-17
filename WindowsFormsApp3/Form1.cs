@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data.OleDb;
-//using EasyXLS;
+
 
 
 namespace WindowsFormsApp3
@@ -12,7 +12,7 @@ namespace WindowsFormsApp3
 
     public partial class Form1 : Form
     {
-        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\WindowsFormsApp3\\WindowsFormsApp3\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
+        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\source\\repos\\WindowsFormsApp3\\WindowsFormsApp3\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
         Dbclass cl = new Dbclass();
         TWP cl1 = new TWP();
@@ -131,11 +131,11 @@ namespace WindowsFormsApp3
                 Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
                 Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
                 object misValue = System.Reflection.Missing.Value;
-                xlexcel = new Excel.Application();
+                xlexcel = new Microsoft.Office.Interop.Excel.Application();
                 xlexcel.Visible = true;
                 xlWorkBook = xlexcel.Workbooks.Add(misValue);
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                Excel.Range CR = (Excel.Range)xlWorkSheet.Cells[1, 1];
+                xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                Microsoft.Office.Interop.Excel.Range CR = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[1, 1];
                 CR.Select();
                 xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);          
                 /*
