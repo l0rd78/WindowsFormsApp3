@@ -12,7 +12,7 @@ namespace WindowsFormsApp3
 
     public partial class Form1 : Form
     {
-        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\qwerty\\source\\repos\\WindowsFormsApp3\\WindowsFormsApp3\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
+        string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\WindowsFormsApp3\\WindowsFormsApp3\\projectNo1.mdf;Integrated Security=True;Connect Timeout=30";
         DataTable table = new DataTable("tbl");
         Dbclass cl = new Dbclass();
         TWP cl1 = new TWP();
