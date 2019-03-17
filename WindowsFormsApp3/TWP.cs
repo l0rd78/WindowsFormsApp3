@@ -45,6 +45,7 @@ namespace WindowsFormsApp3
         
         public async Task OnRequest(object sender, SessionEventArgs e)
         {
+
             
             Console.WriteLine(e.HttpClient.Request.Url);
             if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("google.com"))
