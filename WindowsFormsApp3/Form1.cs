@@ -4,8 +4,8 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data.OleDb;
-
-
+using DataTable = System.Data.DataTable;
+using Microsoft.Office.Interop.Excel;
 
 namespace WindowsFormsApp3
 {
@@ -126,7 +126,19 @@ namespace WindowsFormsApp3
             sfd.FileName = "Inventory_Adjustment_Export.xls";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-
+                copyAlltoClipboard();
+                Microsoft.Office.Interop.Excel.Application xlexcel;
+                Workbook xlWorkBook;
+                Worksheet xlWorkSheet;
+                object misValue = System.Reflection.Missing.Value;
+                xlexcel = new Microsoft.Office.Interop.Excel.Application();
+                xlexcel.Visible = true;
+                xlWorkBook = xlexcel.Workbooks.Add(misValue);
+                xlWorkSheet = (Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                Range CR = (Range)xlWorkSheet.Cells[1, 1];
+                CR.Select();
+                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+                /*
                 // Create an instance of the class that exports Excel files, having one sheet
                 ExcelDocument workbook = new ExcelDocument(1);
 
