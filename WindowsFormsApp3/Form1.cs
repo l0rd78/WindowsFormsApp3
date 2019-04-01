@@ -246,6 +246,7 @@ namespace WindowsFormsApp3
             }
 
         }
+        
 
         private void button1_Click(object sender, EventArgs e) // search button (id - textBox2; address - textBox1; name - textBox3)
         {
