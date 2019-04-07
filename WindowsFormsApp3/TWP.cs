@@ -10,6 +10,7 @@ namespace WindowsFormsApp3
 {
     public class TWP
     {
+        public string redirect;
         public string[] items { get; set; }
         ProxyServer proxyServer = new ProxyServer();
         public void CreateProxySrvr()
@@ -52,22 +53,24 @@ namespace WindowsFormsApp3
             Console.WriteLine(e.HttpClient.Request.Url);
             try
             {
-                if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("google.com"))
-                {
-                    e.Ok("<!DOCTYPE html>" +
-                          "<html><body><h1>" +
-                          "Website Blocked" +
-                          "</h1>" +
-                          "<p>Blocked by titanium web proxy.</p>" +
-                          "</body>" +
-                          "</html>");
-                }
+                /* if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains("google.com"))
+                 {
+                     e.Ok("<!DOCTYPE html>" +
+                           "<html><body><h1>" +
+                           "Website Blocked" +
+                           "</h1>" +
+                           "<p>Blocked by titanium web proxy.</p>" +
+                           "</body>" +
+                           "</html>");
+                 }*/
+
                 //Redirect example
                 foreach (string s in items)
                 {
                     if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains(s))
                     {
-                        e.Redirect("https://www.paypal.com");
+
+                        e.Redirect($"{redirect}");
                     }
                 }
             }

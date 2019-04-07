@@ -54,6 +54,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.Redirect_btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tableBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.projectNo1DataSetBindingSource)).BeginInit();
@@ -77,10 +78,10 @@
             this.nameDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.tableBindingSource1;
             this.dataGridView1.EnableHeadersVisualStyles = false;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 336);
+            this.dataGridView1.Location = new System.Drawing.Point(27, 330);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(941, 379);
+            this.dataGridView1.Size = new System.Drawing.Size(941, 381);
             this.dataGridView1.TabIndex = 0;
             // 
             // idDataGridViewTextBoxColumn
@@ -144,8 +145,8 @@
             // 
             // button1
             // 
-            this.button1.Font = new System.Drawing.Font("OCR A Extended", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(964, 23);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(964, 26);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(126, 74);
             this.button1.TabIndex = 4;
@@ -155,8 +156,8 @@
             // 
             // button2
             // 
-            this.button2.Font = new System.Drawing.Font("OCR A Extended", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(992, 357);
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(992, 609);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(126, 85);
             this.button2.TabIndex = 5;
@@ -166,10 +167,10 @@
             // 
             // button3
             // 
-            this.button3.Font = new System.Drawing.Font("OCR A Extended", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(182, 13);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(177, 10);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(115, 68);
+            this.button3.Size = new System.Drawing.Size(126, 101);
             this.button3.TabIndex = 6;
             this.button3.Text = "Export";
             this.button3.UseVisualStyleBackColor = true;
@@ -177,10 +178,10 @@
             // 
             // button4
             // 
-            this.button4.Font = new System.Drawing.Font("OCR A Extended", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(21, 13);
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(15, 10);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(115, 68);
+            this.button4.Size = new System.Drawing.Size(126, 101);
             this.button4.TabIndex = 7;
             this.button4.Text = "Import";
             this.button4.UseVisualStyleBackColor = true;
@@ -207,8 +208,8 @@
             // button5
             // 
             this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button5.Font = new System.Drawing.Font("OCR A Extended", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(577, 29);
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(578, 23);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(126, 74);
             this.button5.TabIndex = 10;
@@ -237,8 +238,8 @@
             // 
             // button6
             // 
-            this.button6.Font = new System.Drawing.Font("OCR A Extended", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(992, 514);
+            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.Location = new System.Drawing.Point(992, 467);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(126, 85);
             this.button6.TabIndex = 11;
@@ -256,6 +257,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(720, 132);
             this.panel1.TabIndex = 13;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // panel2
             // 
@@ -264,7 +266,7 @@
             this.panel2.Controls.Add(this.button4);
             this.panel2.Location = new System.Drawing.Point(27, 26);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(324, 95);
+            this.panel2.Size = new System.Drawing.Size(324, 132);
             this.panel2.TabIndex = 14;
             // 
             // panel3
@@ -275,16 +277,29 @@
             this.panel3.Controls.Add(this.textBox1);
             this.panel3.Controls.Add(this.textBox3);
             this.panel3.Controls.Add(this.button1);
-            this.panel3.Location = new System.Drawing.Point(27, 187);
+            this.panel3.Location = new System.Drawing.Point(27, 178);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1106, 123);
             this.panel3.TabIndex = 15;
+            this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
+            // 
+            // Redirect_btn
+            // 
+            this.Redirect_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Redirect_btn.Location = new System.Drawing.Point(992, 330);
+            this.Redirect_btn.Name = "Redirect_btn";
+            this.Redirect_btn.Size = new System.Drawing.Size(126, 85);
+            this.Redirect_btn.TabIndex = 16;
+            this.Redirect_btn.Text = "Redirect";
+            this.Redirect_btn.UseVisualStyleBackColor = true;
+            this.Redirect_btn.Click += new System.EventHandler(this.Redirect_btn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1161, 727);
+            this.ClientSize = new System.Drawing.Size(1161, 725);
+            this.Controls.Add(this.Redirect_btn);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -341,6 +356,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn addressDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.Button Redirect_btn;
     }
 }
 

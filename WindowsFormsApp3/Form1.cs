@@ -55,7 +55,12 @@ namespace WindowsFormsApp3
                 
             }
             ItemsRedirect();
-
+            Rediritems();
+        }
+        private void Rediritems()
+        {
+            string redir = Properties.Settings.Default.Save_link;
+            cl1.redirect = redir;
         }
         private void LoadData(string query)
         {
@@ -303,6 +308,28 @@ namespace WindowsFormsApp3
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             cl1.StopProxySrvr();
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Redirect_btn_Click(object sender, EventArgs e)
+        {
+            Form2 newForm = new Form2();
+            newForm.Owner = this;
+            newForm.Show();
         }
     }
 
