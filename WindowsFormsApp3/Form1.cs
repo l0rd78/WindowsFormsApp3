@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.Data.OleDb;
 using DataTable = System.Data.DataTable;
 using Microsoft.Office.Interop.Excel;
+using System.IO;
+using ExcelDataReader;
 
 namespace WindowsFormsApp3
 {
@@ -16,6 +18,7 @@ namespace WindowsFormsApp3
         DataTable table = new DataTable("tbl");
         Dbclass cl = new Dbclass();
         TWP cl1 = new TWP();
+        EXCELLDATAREADER cl2 = new EXCELLDATAREADER();
         public Form1()
         {
             InitializeComponent();
@@ -131,6 +134,7 @@ namespace WindowsFormsApp3
             sfd.FileName = "Inventory_Adjustment_Export.xls";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
+
                 copyAlltoClipboard();
                 Microsoft.Office.Interop.Excel.Application xlexcel;
                 Workbook xlWorkBook;
@@ -143,6 +147,7 @@ namespace WindowsFormsApp3
                 Range CR = (Range)xlWorkSheet.Cells[1, 1];
                 CR.Select();
                 xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
+
                 /*
                 // Create an instance of the class that exports Excel files, having one sheet
                 ExcelDocument workbook = new ExcelDocument(1);
@@ -188,36 +193,17 @@ namespace WindowsFormsApp3
 
         public void button4_Click(object sender, EventArgs e) //                            import button
         {
-            OpenFileDialog opf = new OpenFileDialog();
-            
-            opf.Filter = "Excel (*.XLS)|*.XLS";
-            if (opf.ShowDialog() == DialogResult.OK)
+            var ds = EXCELLDATAREADER.Reader();
+            dataGridView1.DataSource = ds.Tables[0];
+            for(int i = 0; dataGridView1.ColumnCount > i; i++)
             {
-                try
+                ds.Tables[0].Rows.Add(ds);
+                for (int j = 0; dataGridView1.RowCount > i; i++)
                 {
-                    string filename = opf.FileName;
-                    string ConStr = String.Format("Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0}; Extended Properties='Excel 8.0;HDR=YES;';", filename);
-                    using (OleDbConnection cn = new OleDbConnection(ConStr))
-                    {
-                        cn.Open();
-                        DataTable schemaTable = cn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-                        string sheet1 = (string)schemaTable.Rows[0].ItemArray[2];
-                        string select = String.Format("SELECT * FROM [{0}]", sheet1);
-                        using (OleDbDataAdapter ad = new OleDbDataAdapter(select, cn))
-                        {
-                            DataTable dt = new DataTable();
-                            ad.Fill(dt);
-                            UpdateData(dt);
-                        }
-                        cn.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
+                    ds.Tables[0].Rows.Add(ds);
                 }
             }
-            
+
         }
         private void  UpdateData(DataTable dt)
         {
