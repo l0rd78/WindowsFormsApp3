@@ -11,10 +11,10 @@ namespace WindowsFormsApp3
     {
         public static void addLog(string logs)
         {
-            using (StreamWriter strw = new StreamWriter(@"C:/LOGS.txt", true, System.Text.Encoding.Default))
+            /*using (StreamWriter strw = new StreamWriter(@"C:/LOGS.txt", true, System.Text.Encoding.Default))
             {
                 strw.Write(logs);
-            }
+            }*/
         }
     }
 }

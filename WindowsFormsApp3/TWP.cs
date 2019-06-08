@@ -34,7 +34,6 @@ namespace WindowsFormsApp3
                     endPoint.GetType().Name, endPoint.IpAddress, endPoint.Port);
             proxyServer.SetAsSystemHttpProxy(explicitEndPoint);
             proxyServer.SetAsSystemHttpsProxy(explicitEndPoint);
-            logger.addLog("proxy has been created successfully \n");
         }
         private async Task OnBeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs e)
         {
@@ -45,11 +44,8 @@ namespace WindowsFormsApp3
                 e.DecryptSsl = false;
             }
         }
-        
         public async Task OnRequest(object sender, SessionEventArgs e)
         {
-
-            
             Console.WriteLine(e.HttpClient.Request.Url);
             try
             {
@@ -119,7 +115,7 @@ namespace WindowsFormsApp3
             proxyServer.ServerCertificateValidationCallback -= OnCertificateValidation;
             proxyServer.ClientCertificateSelectionCallback -= OnCertificateSelection;
             proxyServer.Stop();
-            logger.addLog("proxy has been closed successfully \n\n");
+            
         }
     }
 }
