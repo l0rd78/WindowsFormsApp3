@@ -63,14 +63,11 @@ namespace WindowsFormsApp3
                            "</body>" +
                            "</html>");
                  }*/
-
-                //Redirect example
                 foreach (string s in items)
                 {
                     var name = e.HttpClient.Request.RequestUri.AbsoluteUri.Split('/')[2];
                     if (name.Contains(s))
                     {
-
                         e.Redirect($"{redirect}");
                     }
                 }
