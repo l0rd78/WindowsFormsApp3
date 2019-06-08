@@ -7,7 +7,7 @@ using System.Data.OleDb;
 using DataTable = System.Data.DataTable;
 using Microsoft.Office.Interop.Excel;
 using System.IO;
-using ExcelDataReader;
+
 
 namespace WindowsFormsApp3
 {
@@ -128,82 +128,56 @@ namespace WindowsFormsApp3
         }
         private void button3_Click(object sender, EventArgs e) //                          export button
         {
-            
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Excel Documents (*.xls)|*.xls";
-            sfd.FileName = "Inventory_Adjustment_Export.xls";
+            string filePath = "";
+            sfd.Filter = "CSV (*.CSV)|*.CSV";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-
-                copyAlltoClipboard();
-                Microsoft.Office.Interop.Excel.Application xlexcel;
-                Workbook xlWorkBook;
-                Worksheet xlWorkSheet;
-                object misValue = System.Reflection.Missing.Value;
-                xlexcel = new Microsoft.Office.Interop.Excel.Application();
-                xlexcel.Visible = true;
-                xlWorkBook = xlexcel.Workbooks.Add(misValue);
-                xlWorkSheet = (Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                Range CR = (Range)xlWorkSheet.Cells[1, 1];
-                CR.Select();
-                xlWorkSheet.PasteSpecial(CR, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true);
-
-                /*
-                // Create an instance of the class that exports Excel files, having one sheet
-                ExcelDocument workbook = new ExcelDocument(1);
-
-                // Set sheet name
-                ExcelWorksheet xlsWorksheet = (ExcelWorksheet)workbook.easy_getSheetAt(0);
-                xlsWorksheet.setSheetName("DataGridView");
-
-                // Get the sheet table that stores the data
-                ExcelTable xlsTable = xlsWorksheet.easy_getExcelTable();
-                int tableRow = 0;
-
-                // Export DataGridView header if the header is visible
-                if (dataGridView1.ColumnHeadersVisible)
+                filePath = sfd.FileName;
+                try
                 {
-
-                    // Add data in cells for header
-                    for (int column = 0; column < dataGridView1.Columns.Count; column++)
-                    {
-                        xlsTable.easy_getCell(tableRow, column).setValue(
-                                              dataGridView1.Columns[column].HeaderText);
-                    }
-                    tableRow++;
+                    SaveDataGridViewToCSV(filePath);
                 }
-
-                // Add data in cells
-                for (int row = 0; row < dataGridView1.Rows.Count - 1; row++)
+                catch (Exception ex)
                 {
-                    for (int column = 0; column < dataGridView1.Columns.Count; column++)
-                    {
-                        xlsTable.easy_getCell(tableRow, column).setValue(
-                                              dataGridView1.Rows[row].Cells[column].Value.ToString());
-                    }
-                    tableRow++;
+                    MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
                 }
-
-                // Export Excel file
-                workbook.easy_WriteXLSFile(sfd.FileName);
-                */
             }
-            
+
         }
 
         public void button4_Click(object sender, EventArgs e) //                            import button
         {
-            var ds = EXCELLDATAREADER.Reader();
-            dataGridView1.DataSource = ds.Tables[0];
-            for(int i = 0; dataGridView1.ColumnCount > i; i++)
+            OpenFileDialog opf = new OpenFileDialog();
+            string filePath = "";
+            opf.Filter = "CSV (*.CSV)|*.CSV";
+            if (opf.ShowDialog() == DialogResult.OK)
             {
-                ds.Tables[0].Rows.Add(ds);
-                for (int j = 0; dataGridView1.RowCount > i; i++)
+                filePath = opf.FileName;
+                try
                 {
-                    ds.Tables[0].Rows.Add(ds);
+                    var dt = EXCELLDATAREADER.readCSV(opf.FileName);
+                    //dataGridView1.DataSource = dt;
+                    UpdateData(dt);
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Exception Occurred while releasing object " + ex.ToString());
+                }
+                //var dt = readCSV();
+                //dataGridView1.DataSource = dt.Tables[0];
             }
-
+        }
+        void SaveDataGridViewToCSV(string filename)
+        {
+            // Choose whether to write header. Use EnableWithoutHeaderText instead to omit header.
+            dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+            // Select all the cells
+            dataGridView1.SelectAll();
+            // Copy selected cells to DataObject
+            DataObject dataObject = dataGridView1.GetClipboardContent();
+            // Get the text of the DataObject, and serialize it to a file
+            File.WriteAllText(filename, dataObject.GetText(TextDataFormat.CommaSeparatedValue));
         }
         private void  UpdateData(DataTable dt)
         {

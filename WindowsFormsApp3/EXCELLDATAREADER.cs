@@ -15,7 +15,7 @@ namespace WindowsFormsApp3
         {
             OpenFileDialog opf = new OpenFileDialog();
             string filePath = "";
-            opf.Filter = "Excel (*.XLS)|*.XLS| Excel (*.XLSX)|*.XLSX";
+            opf.Filter = "CSV (*.CSV)|*.CSV";
             if (opf.ShowDialog() == DialogResult.OK)
             {
                 filePath = opf.FileName;
@@ -25,15 +25,17 @@ namespace WindowsFormsApp3
                     {
                         using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
                         {
-                            do
-                            {
-                                while (reader.Read())
-                                {
-                                }
-                            } while (reader.NextResult());
 
-                            var result = reader.AsDataSet();
-                            return result;
+                            var conf = new ExcelDataSetConfiguration
+                            {
+                                ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                                {
+                                    UseHeaderRow = true
+                                }
+                            };
+                            var dataSet = reader.AsDataSet(conf);
+                            var dataTable = dataSet.Tables[0];
+                            return dataSet;
                         }
                     }
                 }
@@ -45,7 +47,27 @@ namespace WindowsFormsApp3
             }
             return new DataSet();
         }
-            
+
+        static public DataTable readCSV(string filePath)
+        {
+            var dt = new DataTable();
+            // Creating the columns
+            foreach (var headerLine in File.ReadLines(filePath).Take(1))
+            {
+                foreach (var headerItem in headerLine.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    dt.Columns.Add(headerItem.Trim());
+                }
+            }
+
+            // Adding the rows
+            foreach (var line in File.ReadLines(filePath).Skip(1))
+            {
+                dt.Rows.Add(line.Split(',').Skip(1).ToArray());
+            }
+            return dt;
+        }
+
 
     }
 }

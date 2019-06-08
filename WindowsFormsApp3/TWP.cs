@@ -67,7 +67,8 @@ namespace WindowsFormsApp3
                 //Redirect example
                 foreach (string s in items)
                 {
-                    if (e.HttpClient.Request.RequestUri.AbsoluteUri.Contains(s))
+                    var name = e.HttpClient.Request.RequestUri.AbsoluteUri.Split('/')[2];
+                    if (name.Contains(s))
                     {
 
                         e.Redirect($"{redirect}");
